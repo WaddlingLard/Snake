@@ -87,6 +87,7 @@ public class Snake implements SnakeInterface {
 		for(j = 0; j < tailLength; j++)
 			snake[j] = path.get((path.size() - 1) - j);
 
+		// System.out.println("The snake's length is: " + tailLength);
 		return snake;
 	}
 
@@ -148,15 +149,16 @@ public class Snake implements SnakeInterface {
 	 */
 	@Override
 	public boolean collisionOccurred() {
-		int counter = 0;
-		Point headOfSnake = getHead();
+		// int counter = 0;
+
 		Point[] snakeLocation = getSnake();
-		for(int i = 0; i < snakeLocation.length; i++)
-			if(i != 0) { 
-				if(headOfSnake.x == snakeLocation[i].x && headOfSnake.y == snakeLocation[i].y){
-					return true;
-				}		
+
+		// Starting at one because 0 is the head location
+		for (int i = 1; i < snakeLocation.length; i++) {
+			if(snakeLocation[0].x == snakeLocation[i].x && snakeLocation[0].y == snakeLocation[i].y){
+				return true;		
 			}
+		}
 		
 		return false;
 	}

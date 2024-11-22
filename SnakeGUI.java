@@ -176,15 +176,74 @@ public class SnakeGUI extends JComponent implements KeyListener{
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(KeyEvent.VK_UP == e.getKeyCode() && !(SnakeInterface.Direction.Down == snake.getDirection())) { 
-			snake.changeDirection(SnakeInterface.Direction.Up);
-		}else if(KeyEvent.VK_LEFT == e.getKeyCode() && !(SnakeInterface.Direction.Right == snake.getDirection())) {
-			snake.changeDirection(SnakeInterface.Direction.Left);
-		}else if(KeyEvent.VK_RIGHT == e.getKeyCode() && !(SnakeInterface.Direction.Left == snake.getDirection())) {
-			snake.changeDirection(SnakeInterface.Direction.Right);
-		}else if(KeyEvent.VK_DOWN == e.getKeyCode() && !(SnakeInterface.Direction.Up == snake.getDirection())) {
-			snake.changeDirection(SnakeInterface.Direction.Down);
+
+		Point[] snakePath = snake.getSnake();
+		Point head = snakePath[0];
+		Point neck = snakePath[1];
+
+		// The point after the snake's head
+		// Point snakeNeck = snakePath[1];
+
+		switch (e.getKeyCode()) {
+			case (KeyEvent.VK_W):
+				// Going up
+				if (!collideWithNeck(head, neck, SnakeInterface.Direction.Up)) {
+					snake.changeDirection(SnakeInterface.Direction.Up);
+				}
+				break;
+			case (KeyEvent.VK_A):
+				// Going left
+				if (!collideWithNeck(head, neck, SnakeInterface.Direction.Left)) {
+					snake.changeDirection(SnakeInterface.Direction.Left);
+				}
+				break;
+			case (KeyEvent.VK_S):
+				// Going down	
+				if (!collideWithNeck(head, neck, SnakeInterface.Direction.Down)) {
+					snake.changeDirection(SnakeInterface.Direction.Down);
+				}
+				break;
+			case (KeyEvent.VK_D):
+				// Going right
+				if (!collideWithNeck(head, neck, SnakeInterface.Direction.Right)) {
+					snake.changeDirection(SnakeInterface.Direction.Right);
+				}
+
+				break;
+			default:
+				System.out.println("INVALID MOVEMENT");
 		}
+
+		// if(KeyEvent.VK_UP == e.getKeyCode() && !(SnakeInterface.Direction.Down == snake.getDirection())) { 
+		// 	snake.changeDirection(SnakeInterface.Direction.Up);
+		// }else if(KeyEvent.VK_LEFT == e.getKeyCode() && !(SnakeInterface.Direction.Right == snake.getDirection())) {
+		// 	snake.changeDirection(SnakeInterface.Direction.Left);
+		// }else if(KeyEvent.VK_RIGHT == e.getKeyCode() && !(SnakeInterface.Direction.Left == snake.getDirection())) {
+		// 	snake.changeDirection(SnakeInterface.Direction.Right);
+		// }else if(KeyEvent.VK_DOWN == e.getKeyCode() && !(SnakeInterface.Direction.Up == snake.getDirection())) {
+		// 	snake.changeDirection(SnakeInterface.Direction.Down);
+		// }
+	}
+
+	private boolean collideWithNeck(Point head, Point neck, SnakeInterface.Direction direction) {
+
+		if (direction == SnakeInterface.Direction.Up) {
+			return neck.x == head.x && neck.y == head.y - 1;
+		}
+
+		if (direction == SnakeInterface.Direction.Left) {
+			return neck.x == head.x - 1 && neck.y == head.y;
+		}
+		
+		if (direction == SnakeInterface.Direction.Down) {
+			return neck.x == head.x && neck.y == head.y + 1;
+		}
+
+		if (direction == SnakeInterface.Direction.Right) {
+			return neck.x == head.x + 1 && neck.y == head.y;
+		}
+
+		return false;
 	}
 
 	@Override
