@@ -47,8 +47,19 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		snake = new Snake(4,3); // have to implement some sort of menu to take in starting location, i think
 		totalScore = 0;
 		currentLevel = 0;
+
+		JPanel sideButtons = new JPanel();
+
 		JButton resetButton = new JButton();
 		resetButton.setText("Reset");
+
+		JButton settingButton = new JButton();
+		settingButton.setText("Settings");
+
+		sideButtons.add(resetButton);
+		sideButtons.add(settingButton);
+
+
 		JPanel scoreBoard = new JPanel(scoreElements);
 		scoreLabel = new JLabel("Score: " + totalScore);
 		levelLabel = new JLabel("Level: " + currentLevel);
@@ -67,9 +78,15 @@ public class SnakeGUI extends JComponent implements KeyListener{
 			}
 		scoreBoard.add(scoreLabel);
 		scoreBoard.add(levelLabel);
+		
+		// Adding game elements / features
 		this.add(scoreBoard, BorderLayout.NORTH);
 		this.add(window, BorderLayout.CENTER);
-		this.add(resetButton, BorderLayout.EAST);
+		this.add(sideButtons, BorderLayout.EAST);
+
+		// this.add(resetButton, BorderLayout.EAST);
+		// this.add(settingButton, BorderLayout.EAST);
+
 		resetButton.addActionListener(new ResetButtonListener());
 		this.addKeyListener(this);
 		setFocusable(true);
