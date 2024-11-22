@@ -32,8 +32,10 @@ public class SnakeGUI extends JComponent implements KeyListener{
 	private Snake snake;
 	private int totalScore;
 	private int currentLevel;
+
 	private JLabel scoreLabel;
 	private JLabel levelLabel;
+	private JLabel levelvedUpLabel;
 
 	public SnakeGUI() {
 		setupGUI();
@@ -76,18 +78,23 @@ public class SnakeGUI extends JComponent implements KeyListener{
 				tiles[i][j] = button;
 				window.add(button);
 			}
+
+		// Adding lables to the score board
 		scoreBoard.add(scoreLabel);
 		scoreBoard.add(levelLabel);
+		scoreBoard.add(levelvedUpLabel);
 		
 		// Adding game elements / features
 		this.add(scoreBoard, BorderLayout.NORTH);
 		this.add(window, BorderLayout.CENTER);
 		this.add(sideButtons, BorderLayout.EAST);
-
 		// this.add(resetButton, BorderLayout.EAST);
 		// this.add(settingButton, BorderLayout.EAST);
 
+		// Adding listeners to our buttons
 		resetButton.addActionListener(new ResetButtonListener());
+		settingButton.addActionListener(new SettingButtonListener());
+
 		this.addKeyListener(this);
 		setFocusable(true);
 		requestFocus();
@@ -106,6 +113,16 @@ public class SnakeGUI extends JComponent implements KeyListener{
 			resetScoreBoard();
 			requestFocus();
 		}
+	}
+
+	private class SettingButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("PRESSED SETTING BUTTON");
+			// throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+		}
+		
 	}
 
 	private void updateSnake() {
