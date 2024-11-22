@@ -23,20 +23,29 @@ public class Snake implements SnakeInterface {
 		tailLength = DEFAULT_START_TAIL_LENGTH;
 		pointOfOrigin = new Point(startingX, startingY);
 		path = new ArrayList<Point>();
-		path.add(new Point(startingX - 3, startingY));
-		path.add(new Point(startingX - 2, startingY));
-		path.add(new Point(startingX - 1, startingY));
+		// path.add(new Point(startingX - 3, startingY));
+		// path.add(new Point(startingX - 2, startingY));
+		// path.add(new Point(startingX - 1, startingY));
+
+		// The snake will start as a single nub
 		path.add(new Point(startingX, startingY));
+
+
+		// Can setup a default direction based upon position of start point
 		movement = Direction.Right;
 	}
 
 	public Snake(Point startingPoint) {
 		tailLength = DEFAULT_START_TAIL_LENGTH;
 		path = new ArrayList<Point>();
-		path.add(new Point(startingPoint.x - 1 , startingPoint.y));
-		path.add(new Point(startingPoint.x - 1, startingPoint.y));
-		path.add(new Point(startingPoint.x - 1, startingPoint.y));
+		// path.add(new Point(startingPoint.x - 1 , startingPoint.y));
+		// path.add(new Point(startingPoint.x - 1, startingPoint.y));
+		// path.add(new Point(startingPoint.x - 1, startingPoint.y));
+
+		// The snake will start as a single nub
 		path.add(startingPoint);
+
+		// Can setup a default direction based upon position of start point
 		movement = Direction.Right;
 	}
 

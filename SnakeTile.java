@@ -17,6 +17,7 @@ public class SnakeTile extends JButton{
 	private static final int TILE_SIZE = 50;
 	
 	public SnakeTile() {
+
 		reset();
 	}
 	

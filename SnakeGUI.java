@@ -30,7 +30,7 @@ public class SnakeGUI extends JComponent implements KeyListener{
 	private ArrayList<Point> moves;
 
 	private Timer timer;
-	private Snake snake;
+	private Snake snake = null;
 	private int totalScore;
 	private int currentLevel;
 
@@ -85,20 +85,21 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		sideButtons.add(settingButton);
 
 		// Creating the snake
-		snake = new Snake(4,3); // have to implement some sort of menu to take in starting location, i think
+		// snake = new Snake(4,3); // have to implement some sort of menu to take in starting location, i think
 
 		JPanel window = new JPanel();
 
 		window.setLayout(new GridLayout(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT));
 		tiles = new SnakeTile[DEFAULT_WINDOW_WIDTH][DEFAULT_WINDOW_HEIGHT];
 		moves = new ArrayList<Point>();
-		timer = new Timer(START_DELAY, new MyAnimationAction());
-		timer.start();
+		// timer = new Timer(START_DELAY, new MyAnimationAction());
+		// timer.start();
 
 		for(int i = 0; i < DEFAULT_WINDOW_WIDTH; i++)
 			for(int j = 0; j < DEFAULT_WINDOW_HEIGHT; j++) {
 				SnakeTile button = new SnakeTile();
 				tiles[i][j] = button;
+				button.addActionListener(new SnakeTileButtonListener(i, j));
 				window.add(button);
 			}
 
@@ -114,6 +115,15 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		this.addKeyListener(this);
 		setFocusable(true);
 		requestFocus();
+	}
+
+	public void createSnake(int x, int y) {
+		this.snake = new Snake(x, y);
+
+		timer = new Timer(START_DELAY, new MyAnimationAction());
+		timer.start();
+
+		return;
 	}
 
 	
@@ -136,9 +146,38 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("PRESSED SETTING BUTTON");
+			
+			JPanel settings = new JPanel();
 			// throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
 		}
 		
+	}
+
+	private class SnakeTileButtonListener implements ActionListener {
+
+		private int x, y;
+
+		public SnakeTileButtonListener(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("Button Pressed! Location: " + this.x + ", " + this.y);
+			// Construct snake on the tile
+			Snake snake = getSnake();
+			if (snake == null) {
+				createSnake(x, y);
+				return;
+			}
+			System.out.println("Snake is not null");
+		}
+
+	}
+
+	private Snake getSnake() {
+		return snake;
 	}
 
 	private void updateSnake() {
@@ -214,6 +253,11 @@ public class SnakeGUI extends JComponent implements KeyListener{
 			setFocusable(true);
 			requestFocus();
 
+			// Must generate snake first
+			if (snake == null) {
+				return;
+			}
+
 			try {
 				updateSnake();
 				updateScore();
@@ -230,10 +274,19 @@ public class SnakeGUI extends JComponent implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 
+		if (snake == null) {
+			return;
+		}
+
 		Point[] snakePath = snake.getSnake();
-		Point head = snakePath[0];
-		Point neck = snakePath[1];
-		requestFocus();
+		Point head, neck;
+		if (snakePath.length == 1) { // When the snake is a single nub at the start
+			neck = snakePath[0];
+		} else {
+			neck = snakePath[1];
+		}
+		head = snakePath[0];
+		
 		switch (e.getKeyCode()) {
 			case (KeyEvent.VK_W):
 				// Going up
