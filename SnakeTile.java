@@ -2,22 +2,30 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 import javax.swing.JButton;
 
 public class SnakeTile extends JButton{
 
 	private int numVisited;
-	private static int[] pointValue = {500, 350, 200, 150, 100, 50, 25, 10}; 
-	
+	private Random random;
+	private boolean isBonus;
+
+	// Constants
+	private static final int[] POINT_VALUE = {500, 350, 200, 150, 100, 50, 25, 10}; 
+	private static final double BONUS_TILE_CHANCE = 0.05;
+	private static final int BONUS_MULTIPLIER = 5;
+	private static final int TILE_SIZE = 50;
 	
 	public SnakeTile() {
+		// A randomized seed for Bonus Tile Generation
+		random = new Random(System.currentTimeMillis());
 		reset();
 	}
 	
 	public void visit() {
-		numVisited += 1;
-		setText(numVisited + "");
+		setText(++numVisited + "");
 		setBackground(Color.WHITE);
 	}
 	
@@ -26,8 +34,16 @@ public class SnakeTile extends JButton{
 	}
 	
 	public void reset() {
-		setBackground(Color.lightGray);
-		setPreferredSize(new Dimension(50,40));
+		double chance = random.nextDouble();
+		System.out.println(chance);
+		if (BONUS_TILE_CHANCE >= chance) {
+			isBonus = true;
+			setBackground(Color.RED);
+		} else {
+			isBonus = false;
+			setBackground(Color.BLACK);
+		}
+		setPreferredSize(new Dimension(TILE_SIZE, TILE_SIZE));
 	}
 	
 	public void hardReset() {
@@ -43,9 +59,9 @@ public class SnakeTile extends JButton{
 		
 		while(valueFound == false) {
 			if(getNumVisited() == counter) {
-				value = pointValue[counter - 1];
+				value = POINT_VALUE[counter - 1];
 				valueFound = true;
-			}else if(getNumVisited() > pointValue.length) {
+			}else if(getNumVisited() > POINT_VALUE.length) {
 				value = 5;
 				valueFound = true;
 			}
