@@ -49,21 +49,25 @@ public class Snake implements SnakeInterface {
 		movement = Direction.Right;
 	}
 
-	public Snake(Point startingPoint, int tailLength) { //This constructor is flawed and I'm unsure how to make it work
-		this.tailLength = tailLength;
-		path = new ArrayList<Point>();
-		path.add(startingPoint);
-		movement = Direction.Right;
-	}
+	/**
+	 * Not used for anything
+	 */
+	// public Snake(Point startingPoint, int tailLength) { //This constructor is flawed and I'm unsure how to make it work
+	// 	this.tailLength = tailLength;
+	// 	path = new ArrayList<Point>();
+	// 	path.add(startingPoint);
+	// 	movement = Direction.Right;
+	// }
 	
 	/**
 	 * This method resets the snake back to its original position
+	 * METHOD DEPRECATED
 	 */
 	public void resetSnake() {
 		path.clear();
-		path.add(new Point(pointOfOrigin.x - 3, pointOfOrigin.y));
-		path.add(new Point(pointOfOrigin.x - 2, pointOfOrigin.y));
-		path.add(new Point(pointOfOrigin.x - 1, pointOfOrigin.y));
+		// path.add(new Point(pointOfOrigin.x - 3, pointOfOrigin.y));
+		// path.add(new Point(pointOfOrigin.x - 2, pointOfOrigin.y));
+		// path.add(new Point(pointOfOrigin.x - 1, pointOfOrigin.y));
 		path.add(new Point(pointOfOrigin.x, pointOfOrigin.y));
 	}
 	

@@ -99,7 +99,7 @@ public class SnakeGUI extends JComponent implements KeyListener{
 			for(int j = 0; j < DEFAULT_WINDOW_HEIGHT; j++) {
 				SnakeTile button = new SnakeTile();
 				tiles[i][j] = button;
-				button.addActionListener(new SnakeTileButtonListener(i, j));
+				button.addActionListener(new SnakeTileButtonListener(j, i));
 				window.add(button);
 			}
 
@@ -133,9 +133,12 @@ public class SnakeGUI extends JComponent implements KeyListener{
 			for(int i = 0; i < DEFAULT_WINDOW_WIDTH; i++)
 				for(int j = 0; j < DEFAULT_WINDOW_HEIGHT; j++)
 					tiles[i][j].hardReset();
-			snake.resetSnake();
-			snake.lengthReset();
-			timer.restart();
+			// snake.resetSnake();
+			snake = null;
+			// snake.lengthReset();
+			// timer.restart();
+			timer.stop();
+			timer = null;
 			resetScoreBoard();
 			requestFocus();
 		}
@@ -227,10 +230,10 @@ public class SnakeGUI extends JComponent implements KeyListener{
 
 	}
 
-	public Point[] getCompletePath(){
-		Point[] path = (Point[]) moves.toArray();
-		return path;
-	}
+	// public Point[] getCompletePath(){
+	// 	Point[] path = (Point[]) moves.toArray();
+	// 	return path;
+	// }
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("Snake!");
