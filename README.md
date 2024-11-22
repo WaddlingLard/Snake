@@ -1,4 +1,4 @@
-# Project 5: Snake
+# Project: Snake
 
 * Author: Brian Wu
 * Class: CS121 Section #01
@@ -17,6 +17,12 @@ One problem that I ran into was the issue of trying to come up with ideas, but I
 ## Compiling and Using
 
 This should work as normal without any extra information needed. Just run the command and it should work.
+
+To compile:
+`javac *.java`
+
+To run:
+`java SnakeGUI.java`
 
 ## Sources used
 
