@@ -31,12 +31,15 @@ public class SnakeGUI extends JComponent implements KeyListener{
 
 	private Timer timer;
 	private Snake snake = null;
-	private int totalScore;
+	private int gameScore;
+	private int highScore;
 	private int currentLevel;
 
 	private JLabel scoreLabel;
 	private JLabel levelLabel;
 	private JLabel levelvedUpLabel;
+	private JLabel highScoreLabel;
+
 	private JButton resetButton;
 	private JButton settingButton;
 
@@ -51,26 +54,30 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		this.setLayout(layout);
 
 		// Will store the score, level, and levelup!
-		GridLayout scoreElementsLayout = new GridLayout(1,3);
+		GridLayout scoreElementsLayout = new GridLayout(1,4);
 		GridLayout sideButtonsLayout = new GridLayout(2, 1);
 
 		// Score board panel
 		JPanel scoreBoard = new JPanel(scoreElementsLayout);
 		scoreBoard.setBackground(Color.BLACK);
 		
-		totalScore = 0;
+		gameScore = 0;
 		currentLevel = 0;
+		highScore = 0;
 
-		scoreLabel = new JLabel("Score: " + totalScore);
+		scoreLabel = new JLabel("Score: " + gameScore);
 		levelLabel = new JLabel("Level: " + currentLevel);
 		levelvedUpLabel = new JLabel("");
+		highScoreLabel = new JLabel("High Score: " + highScore);
 		scoreLabel.setForeground(Color.GREEN);
 		levelLabel.setForeground(Color.GREEN);
 		levelvedUpLabel.setForeground(Color.YELLOW);
+		highScoreLabel.setForeground(Color.RED);
 
 		scoreBoard.add(scoreLabel);
 		scoreBoard.add(levelLabel);
 		scoreBoard.add(levelvedUpLabel);
+		scoreBoard.add(highScoreLabel);
 
 		// Side panel
 		JPanel sideButtons = new JPanel(sideButtonsLayout);
@@ -206,21 +213,25 @@ public class SnakeGUI extends JComponent implements KeyListener{
 
 	private void resetScoreBoard() {
 		currentLevel = 0;
-		totalScore = 0;
-		scoreLabel.setText("Score " + totalScore);
+		gameScore = 0;
+		scoreLabel.setText("Score " + gameScore);
 		levelLabel.setText("Level " + currentLevel);
 	}
 
 	private void updateScore() {
-		totalScore += tiles[snake.getHead().y][snake.getHead().x].tileValue();
+		gameScore += tiles[snake.getHead().y][snake.getHead().x].tileValue();
+		if (gameScore > highScore) {
+			highScore = gameScore;
+		}
 		levelUp();
-		scoreLabel.setText("Score: " + totalScore);
+		scoreLabel.setText("Score: " + gameScore);
 		levelLabel.setText("Level: " + currentLevel);
+		highScoreLabel.setText("High Score: " + highScore);
 	}
 
 	private void levelUp() {
 		int temp = currentLevel;
-		currentLevel = totalScore / 7500;
+		currentLevel = gameScore / 7500;
 		if(temp < currentLevel) {
 			snake.increaseLength();
 			levelvedUpLabel.setText("LEVEL UP!");
