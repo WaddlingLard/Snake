@@ -23,7 +23,8 @@ public class SnakeGUI extends JComponent implements KeyListener{
 
 	private static final int DEFAULT_WINDOW_WIDTH = 18;
 	private static final int DEFAULT_WINDOW_HEIGHT = 24;
-	private static final int START_DELAY = 555;
+	private static final int START_DELAY = 600;
+	private static final int BORDER_LAYOUT_GAP = 10;
 
 	private SnakeTile[][] tiles;
 	private ArrayList<Point> moves;
@@ -36,36 +37,53 @@ public class SnakeGUI extends JComponent implements KeyListener{
 	private JLabel scoreLabel;
 	private JLabel levelLabel;
 	private JLabel levelvedUpLabel;
+	private JButton resetButton;
+	private JButton settingButton;
 
 	public SnakeGUI() {
 		setupGUI();
 	}
 
 	private void setupGUI() {
-		BorderLayout test = new BorderLayout();
-		GridLayout scoreElements = new GridLayout(1,2);
-		this.setLayout(test);
 
-		snake = new Snake(4,3); // have to implement some sort of menu to take in starting location, i think
+		// Setting up the layout for the GUI (with gaps between elements)
+		BorderLayout layout = new BorderLayout(BORDER_LAYOUT_GAP, BORDER_LAYOUT_GAP);
+		this.setLayout(layout);
+
+		// Will store the score, level, and levelup!
+		GridLayout scoreElementsLayout = new GridLayout(1,3);
+		GridLayout sideButtonsLayout = new GridLayout(2, 1);
+
+		// Score board panel
+		JPanel scoreBoard = new JPanel(scoreElementsLayout);
+		
 		totalScore = 0;
 		currentLevel = 0;
 
-		JPanel sideButtons = new JPanel();
+		scoreLabel = new JLabel("Score: " + totalScore);
+		levelLabel = new JLabel("Level: " + currentLevel);
+		levelvedUpLabel = new JLabel("");
 
-		JButton resetButton = new JButton();
+		scoreBoard.add(scoreLabel);
+		scoreBoard.add(levelLabel);
+		scoreBoard.add(levelvedUpLabel);
+
+		// Side panel
+		JPanel sideButtons = new JPanel(sideButtonsLayout);
+
+		resetButton = new JButton();
 		resetButton.setText("Reset");
-
-		JButton settingButton = new JButton();
+		settingButton = new JButton();
 		settingButton.setText("Settings");
 
 		sideButtons.add(resetButton);
 		sideButtons.add(settingButton);
 
+		// Creating the snake
+		snake = new Snake(4,3); // have to implement some sort of menu to take in starting location, i think
 
-		JPanel scoreBoard = new JPanel(scoreElements);
-		scoreLabel = new JLabel("Score: " + totalScore);
-		levelLabel = new JLabel("Level: " + currentLevel);
 		JPanel window = new JPanel();
+
 		window.setLayout(new GridLayout(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT));
 		tiles = new SnakeTile[DEFAULT_WINDOW_WIDTH][DEFAULT_WINDOW_HEIGHT];
 		moves = new ArrayList<Point>();
@@ -79,17 +97,13 @@ public class SnakeGUI extends JComponent implements KeyListener{
 				window.add(button);
 			}
 
-		// Adding lables to the score board
-		scoreBoard.add(scoreLabel);
-		scoreBoard.add(levelLabel);
-		scoreBoard.add(levelvedUpLabel);
+
+		// scoreBoard.add(levelvedUpLabel);
 		
 		// Adding game elements / features
 		this.add(scoreBoard, BorderLayout.NORTH);
 		this.add(window, BorderLayout.CENTER);
 		this.add(sideButtons, BorderLayout.EAST);
-		// this.add(resetButton, BorderLayout.EAST);
-		// this.add(settingButton, BorderLayout.EAST);
 
 		// Adding listeners to our buttons
 		resetButton.addActionListener(new ResetButtonListener());
@@ -126,6 +140,10 @@ public class SnakeGUI extends JComponent implements KeyListener{
 	}
 
 	private void updateSnake() {
+
+		setFocusable(true);
+		requestFocus();
+
 		moves.add(snake.move());
 			if(snake.isGameOver(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)) {
 			timer.stop();
@@ -160,9 +178,9 @@ public class SnakeGUI extends JComponent implements KeyListener{
 			snake.increaseLength();
 	}
 
-	public ArrayList<Point> getCompletePath(){
-
-		return null;
+	public Point[] getCompletePath(){
+		Point[] path = (Point[]) moves.toArray();
+		return path;
 	}
 
 	public static void main(String[] args) {
@@ -172,12 +190,10 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		frame.getContentPane().add(panel);
 		frame.pack();
 		frame.setVisible(true);
-
 	}
 
 	private void updateTimer() {
 		timer.setDelay((int) (START_DELAY * Math.pow(.9, currentLevel + 1)));
-
 	}
 
 	private class MyAnimationAction implements ActionListener{
@@ -197,6 +213,7 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		Point[] snakePath = snake.getSnake();
 		Point head = snakePath[0];
 		Point neck = snakePath[1];
+		requestFocus();
 
 		// The point after the snake's head
 		// Point snakeNeck = snakePath[1];

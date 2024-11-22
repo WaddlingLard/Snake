@@ -34,7 +34,8 @@ public class SnakeTile extends JButton{
 	}
 	
 	public void reset() {
-		double chance = random.nextDouble();
+		// double chance = random.nextDouble();
+		double chance = random.nextDouble(1.0);
 		System.out.println(chance);
 		if (BONUS_TILE_CHANCE >= chance) {
 			isBonus = true;

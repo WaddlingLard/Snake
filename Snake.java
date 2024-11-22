@@ -177,6 +177,7 @@ public class Snake implements SnakeInterface {
 			return true;
 		}
 		
+		System.out.println("Valid game state!");
 		return false;
 	}
 
