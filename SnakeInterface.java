@@ -10,7 +10,8 @@ public interface SnakeInterface
 
     public static enum Direction {Up, Down, Left, Right};
 	
-	public static final int DEFAULT_START_TAIL_LENGTH = 3;
+	// This is revised as to allow the user to place the snake anywhere
+	public static final int DEFAULT_START_TAIL_LENGTH = 1;
 	
 	/**
 	 * Returns (a copy of) the position of the current head of the snake.
