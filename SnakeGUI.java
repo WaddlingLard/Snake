@@ -24,7 +24,7 @@ public class SnakeGUI extends JComponent implements KeyListener{
 	private static final int DEFAULT_WINDOW_WIDTH = 18;
 	private static final int DEFAULT_WINDOW_HEIGHT = 24;
 	private static final int START_DELAY = 600;
-	private static final int BORDER_LAYOUT_GAP = 10;
+	private static final int BORDER_LAYOUT_GAP = 5;
 
 	private SnakeTile[][] tiles;
 	private ArrayList<Point> moves;
@@ -56,6 +56,7 @@ public class SnakeGUI extends JComponent implements KeyListener{
 
 		// Score board panel
 		JPanel scoreBoard = new JPanel(scoreElementsLayout);
+		scoreBoard.setBackground(Color.BLACK);
 		
 		totalScore = 0;
 		currentLevel = 0;
@@ -63,6 +64,9 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		scoreLabel = new JLabel("Score: " + totalScore);
 		levelLabel = new JLabel("Level: " + currentLevel);
 		levelvedUpLabel = new JLabel("");
+		scoreLabel.setForeground(Color.GREEN);
+		levelLabel.setForeground(Color.GREEN);
+		levelvedUpLabel.setForeground(Color.YELLOW);
 
 		scoreBoard.add(scoreLabel);
 		scoreBoard.add(levelLabel);
@@ -70,6 +74,7 @@ public class SnakeGUI extends JComponent implements KeyListener{
 
 		// Side panel
 		JPanel sideButtons = new JPanel(sideButtonsLayout);
+		// sideButtons.setBackground(Color.BLACK);
 
 		resetButton = new JButton();
 		resetButton.setText("Reset");
@@ -97,9 +102,6 @@ public class SnakeGUI extends JComponent implements KeyListener{
 				window.add(button);
 			}
 
-
-		// scoreBoard.add(levelvedUpLabel);
-		
 		// Adding game elements / features
 		this.add(scoreBoard, BorderLayout.NORTH);
 		this.add(window, BorderLayout.CENTER);
@@ -141,8 +143,8 @@ public class SnakeGUI extends JComponent implements KeyListener{
 
 	private void updateSnake() {
 
-		setFocusable(true);
-		requestFocus();
+		// setFocusable(true);
+		// requestFocus();
 
 		moves.add(snake.move());
 			if(snake.isGameOver(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)) {
@@ -150,10 +152,13 @@ public class SnakeGUI extends JComponent implements KeyListener{
 			
 		}else {
 		Point[] snakePoints = snake.getSnake();
+
+		// Throw ArrayOutOfBoundsException
 		tiles[snake.getHead().y][snake.getHead().x].visit();
+
 		for(int i = 1; i < snakePoints.length; i++)
 			tiles[snakePoints[i].y][snakePoints[i].x].setBackground(Color.WHITE);
-		tiles[snake.getPreviousEnd().y][snake.getPreviousEnd().x].reset();
+			tiles[snake.getPreviousEnd().y][snake.getPreviousEnd().x].reset();
 		}
 	}
 
@@ -174,8 +179,13 @@ public class SnakeGUI extends JComponent implements KeyListener{
 	private void levelUp() {
 		int temp = currentLevel;
 		currentLevel = totalScore / 7500;
-		if(temp < currentLevel)
+		if(temp < currentLevel) {
 			snake.increaseLength();
+			levelvedUpLabel.setText("LEVEL UP!");
+		} else {
+			levelvedUpLabel.setText("");
+		}
+
 	}
 
 	public Point[] getCompletePath(){
@@ -200,10 +210,20 @@ public class SnakeGUI extends JComponent implements KeyListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			updateSnake();
-			updateScore();
-			updateTimer();
+
+			setFocusable(true);
+			requestFocus();
+
+			try {
+				updateSnake();
+				updateScore();
+				// updateSnake();
+				updateTimer();
+			} catch (ArrayIndexOutOfBoundsException exception) {
+				System.out.println("Snake is out of bounds");
+
+			}
+
 		}
 	}
 	
@@ -214,10 +234,6 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		Point head = snakePath[0];
 		Point neck = snakePath[1];
 		requestFocus();
-
-		// The point after the snake's head
-		// Point snakeNeck = snakePath[1];
-
 		switch (e.getKeyCode()) {
 			case (KeyEvent.VK_W):
 				// Going up

@@ -8,25 +8,21 @@ import javax.swing.JButton;
 
 public class SnakeTile extends JButton{
 
-	private int numVisited;
-	private Random random;
-	private boolean isBonus;
+	private int numVisited = 0;
+	private boolean isBonus = false;
 
 	// Constants
 	private static final int[] POINT_VALUE = {500, 350, 200, 150, 100, 50, 25, 10}; 
-	private static final double BONUS_TILE_CHANCE = 0.05;
 	private static final int BONUS_MULTIPLIER = 5;
 	private static final int TILE_SIZE = 50;
 	
 	public SnakeTile() {
-		// A randomized seed for Bonus Tile Generation
-		random = new Random(System.currentTimeMillis());
 		reset();
 	}
 	
 	public void visit() {
 		setText(++numVisited + "");
-		setBackground(Color.WHITE);
+		setBackground(Color.GREEN);
 	}
 	
 	public int getNumVisited() {
@@ -34,15 +30,10 @@ public class SnakeTile extends JButton{
 	}
 	
 	public void reset() {
-		// double chance = random.nextDouble();
-		double chance = random.nextDouble(1.0);
-		System.out.println(chance);
-		if (BONUS_TILE_CHANCE >= chance) {
-			isBonus = true;
+		if (isBonus) {
 			setBackground(Color.RED);
 		} else {
-			isBonus = false;
-			setBackground(Color.BLACK);
+			setBackground(Color.BLACK);	
 		}
 		setPreferredSize(new Dimension(TILE_SIZE, TILE_SIZE));
 	}
@@ -70,6 +61,10 @@ public class SnakeTile extends JButton{
 		}
 
 		return value;
+	}
+
+	public void setBonus() {
+		this.isBonus = true;
 	}
 	
 	public void onTile() { // Don't know if I need this, i just realized this

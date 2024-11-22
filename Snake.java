@@ -149,8 +149,6 @@ public class Snake implements SnakeInterface {
 	 */
 	@Override
 	public boolean collisionOccurred() {
-		// int counter = 0;
-
 		Point[] snakeLocation = getSnake();
 
 		// Starting at one because 0 is the head location
@@ -172,12 +170,12 @@ public class Snake implements SnakeInterface {
 		int pointx = headPoint.x;
 		int pointy = headPoint.y;
 		
-		if (pointx < 0 || pointx > height || pointy < 0 || pointy > width  || collisionOccurred()) {
+		if (pointx < 0 || pointx >= height || pointy < 0 || pointy >= width  || collisionOccurred()) {
 			System.out.println("GAME OVER");
 			return true;
 		}
 		
-		System.out.println("Valid game state!");
+		// System.out.println("Valid game state!");
 		return false;
 	}
 
