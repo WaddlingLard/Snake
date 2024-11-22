@@ -8,18 +8,19 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+// import javax.swing.JButton;
+// import javax.swing.JComponent;
+// import javax.swing.JFrame;
+// import javax.swing.JLabel;
+// import javax.swing.JPanel;
+// import javax.swing.Timer;
+import javax.swing.*;
+
 /**
  * This class handles the GUI, snake movement, and score/time.
  * @author brianwu
- *
  */
-public class SnakeGUI extends JComponent implements KeyListener{
+public class SnakeGUI extends JComponent implements KeyListener {
 
 	private static final int DEFAULT_WINDOW_WIDTH = 18;
 	private static final int DEFAULT_WINDOW_HEIGHT = 24;
@@ -157,8 +158,15 @@ public class SnakeGUI extends JComponent implements KeyListener{
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("PRESSED SETTING BUTTON");
 			
-			JPanel settings = new JPanel();
-			// throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+			// JFrame frame = new JFrame();
+			// JPanel settings = new JPanel();
+			SnakeSettingsPanel panel = new SnakeSettingsPanel();
+			// panel.setDefaultCloseOperation(JPanel.EXIT_ON_CLOSE);
+
+			// frame.add(settings);
+			// frame.setSize(200,200);
+			// settings.setVisible(true);
+			// System.out.println("SCREEN SHOULD EXIST");
 		}
 		
 	}
@@ -281,7 +289,6 @@ public class SnakeGUI extends JComponent implements KeyListener{
 				System.out.println("Snake is out of bounds");
 
 			}
-
 		}
 	}
 	
