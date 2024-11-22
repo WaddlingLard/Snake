@@ -5,10 +5,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-public class SnakeSettingsPanel extends JComponent implements ActionListener{
+public class SnakeSettingsPanel extends JComponent{
 
     private static final int PANEL_SIZE = 400;
     private static final int BORDER_GAP = 5;
+
+    private ButtonGroup speeds;
 
     public SnakeSettingsPanel() {
         setupPanel();
@@ -22,14 +24,14 @@ public class SnakeSettingsPanel extends JComponent implements ActionListener{
         frame.setTitle("Settings");
 
         JLabel header = new JLabel("Speed Setting");
-        GridLayout settingsLayout = new GridLayout(3,1);
+        GridLayout settingsLayout = new GridLayout(4,1);
         JPanel panel = new JPanel();
         panel.setLayout(settingsLayout);
 
         JButton set = new JButton("Set Speed");
-        set.addActionListener(null);
+        set.addActionListener(new SetButtonListener());
 
-        ButtonGroup speeds = new ButtonGroup();
+        speeds = new ButtonGroup();
         
         JRadioButtonMenuItem low = new JRadioButtonMenuItem();
         JRadioButtonMenuItem med = new JRadioButtonMenuItem();
@@ -45,19 +47,20 @@ public class SnakeSettingsPanel extends JComponent implements ActionListener{
         panel.add(low);
         panel.add(med);
         panel.add(high);
+        panel.add(set);
 
         frame.add(header, BorderLayout.NORTH);
         frame.add(panel, BorderLayout.SOUTH);
         frame.setSize((int) (PANEL_SIZE / 1.5), PANEL_SIZE / 2);
         frame.setVisible(true);
-        
     }
 
-    // Used for the set button
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("SET BUTTON PRESSED!");
+    private class SetButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("SET BUTTON PRESSED!");
+        }
+
     }
-
-
 }
