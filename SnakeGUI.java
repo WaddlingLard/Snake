@@ -7,6 +7,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Random;
+// import java.util.random;
+// import java.util.Date;
 
 // import javax.swing.JButton;
 // import javax.swing.JComponent;
@@ -18,6 +21,7 @@ import javax.swing.*;
 
 /**
  * This class handles the GUI, snake movement, and score/time.
+ * 
  * @author brianwu
  */
 public class SnakeGUI extends JComponent implements KeyListener {
@@ -44,7 +48,10 @@ public class SnakeGUI extends JComponent implements KeyListener {
 	private JButton resetButton;
 	private JButton settingButton;
 
+	private static Random numGenerator = new Random(System.currentTimeMillis());
+
 	public SnakeGUI() {
+
 		setupGUI();
 	}
 
@@ -55,13 +62,13 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		this.setLayout(layout);
 
 		// Will store the score, level, and levelup!
-		GridLayout scoreElementsLayout = new GridLayout(1,4);
+		GridLayout scoreElementsLayout = new GridLayout(1, 4);
 		GridLayout sideButtonsLayout = new GridLayout(2, 1);
 
 		// Score board panel
 		JPanel scoreBoard = new JPanel(scoreElementsLayout);
 		scoreBoard.setBackground(Color.BLACK);
-		
+
 		gameScore = 0;
 		currentLevel = 0;
 		highScore = 0;
@@ -93,7 +100,8 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		sideButtons.add(settingButton);
 
 		// Creating the snake
-		// snake = new Snake(4,3); // have to implement some sort of menu to take in starting location, i think
+		// snake = new Snake(4,3); // have to implement some sort of menu to take in
+		// starting location, i think
 
 		JPanel window = new JPanel();
 
@@ -103,13 +111,20 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		// timer = new Timer(START_DELAY, new MyAnimationAction());
 		// timer.start();
 
-		for(int i = 0; i < DEFAULT_WINDOW_WIDTH; i++)
-			for(int j = 0; j < DEFAULT_WINDOW_HEIGHT; j++) {
+		for (int i = 0; i < DEFAULT_WINDOW_WIDTH; i++)
+			for (int j = 0; j < DEFAULT_WINDOW_HEIGHT; j++) {
 				SnakeTile button = new SnakeTile();
 				tiles[i][j] = button;
 				button.addActionListener(new SnakeTileButtonListener(j, i));
 				window.add(button);
 			}
+
+		// Create a bonus tile
+		int randomX = numGenerator.nextInt(DEFAULT_WINDOW_WIDTH);
+		int randomY = numGenerator.nextInt(DEFAULT_WINDOW_HEIGHT);
+
+		SnakeTile bonusStartTile = tiles[randomX][randomY];
+		bonusStartTile.setBonus();
 
 		// Adding game elements / features
 		this.add(scoreBoard, BorderLayout.NORTH);
@@ -134,12 +149,11 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		return;
 	}
 
-	
 	private class ResetButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			for(int i = 0; i < DEFAULT_WINDOW_WIDTH; i++)
-				for(int j = 0; j < DEFAULT_WINDOW_HEIGHT; j++)
+			for (int i = 0; i < DEFAULT_WINDOW_WIDTH; i++)
+				for (int j = 0; j < DEFAULT_WINDOW_HEIGHT; j++)
 					tiles[i][j].hardReset();
 			// snake.resetSnake();
 			snake = null;
@@ -157,7 +171,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("PRESSED SETTING BUTTON");
-			
+
 			// JFrame frame = new JFrame();
 			// JPanel settings = new JPanel();
 			SnakeSettingsPanel panel = new SnakeSettingsPanel();
@@ -168,7 +182,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 			// settings.setVisible(true);
 			// System.out.println("SCREEN SHOULD EXIST");
 		}
-		
+
 	}
 
 	private class SnakeTileButtonListener implements ActionListener {
@@ -204,17 +218,17 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		// requestFocus();
 
 		moves.add(snake.move());
-			if(snake.isGameOver(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)) {
+		if (snake.isGameOver(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)) {
 			timer.stop();
-			
-		}else {
-		Point[] snakePoints = snake.getSnake();
 
-		// Throw ArrayOutOfBoundsException
-		tiles[snake.getHead().y][snake.getHead().x].visit();
+		} else {
+			Point[] snakePoints = snake.getSnake();
 
-		for(int i = 1; i < snakePoints.length; i++)
-			tiles[snakePoints[i].y][snakePoints[i].x].setBackground(Color.WHITE);
+			// Throw ArrayOutOfBoundsException
+			tiles[snake.getHead().y][snake.getHead().x].visit();
+
+			for (int i = 1; i < snakePoints.length; i++)
+				tiles[snakePoints[i].y][snakePoints[i].x].setBackground(Color.WHITE);
 			tiles[snake.getPreviousEnd().y][snake.getPreviousEnd().x].reset();
 		}
 	}
@@ -227,7 +241,17 @@ public class SnakeGUI extends JComponent implements KeyListener {
 	}
 
 	private void updateScore() {
-		gameScore += tiles[snake.getHead().y][snake.getHead().x].tileValue();
+		// gameScore += tiles[snake.getHead().y][snake.getHead().x].tileValue();
+		if (tiles[snake.getHead().y][snake.getHead().x].isBonus()) {
+			// Create a bonus tile
+			int randomX = numGenerator.nextInt(DEFAULT_WINDOW_WIDTH);
+			int randomY = numGenerator.nextInt(DEFAULT_WINDOW_HEIGHT);
+
+			SnakeTile bonusStartTile = tiles[randomX][randomY];
+			bonusStartTile.setBonus();
+		}
+
+		gameScore += tiles[snake.getHead().y][snake.getHead().x].visitTile();
 		if (gameScore > highScore) {
 			highScore = gameScore;
 		}
@@ -240,7 +264,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 	private void levelUp() {
 		int temp = currentLevel;
 		currentLevel = gameScore / 7500;
-		if(temp < currentLevel) {
+		if (temp < currentLevel) {
 			snake.increaseLength();
 			levelvedUpLabel.setText("LEVEL UP!");
 		} else {
@@ -250,8 +274,8 @@ public class SnakeGUI extends JComponent implements KeyListener {
 	}
 
 	// public Point[] getCompletePath(){
-	// 	Point[] path = (Point[]) moves.toArray();
-	// 	return path;
+	// Point[] path = (Point[]) moves.toArray();
+	// return path;
 	// }
 
 	public static void main(String[] args) {
@@ -267,7 +291,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		timer.setDelay((int) (START_DELAY * Math.pow(.9, currentLevel + 1)));
 	}
 
-	private class MyAnimationAction implements ActionListener{
+	private class MyAnimationAction implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -291,7 +315,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 			}
 		}
 	}
-	
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 
@@ -307,7 +331,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 			neck = snakePath[1];
 		}
 		head = snakePath[0];
-		
+
 		switch (e.getKeyCode()) {
 			case (KeyEvent.VK_W):
 				// Going up
@@ -322,7 +346,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 				}
 				break;
 			case (KeyEvent.VK_S):
-				// Going down	
+				// Going down
 				if (!collideWithNeck(head, neck, SnakeInterface.Direction.Down)) {
 					snake.changeDirection(SnakeInterface.Direction.Down);
 				}
@@ -338,14 +362,18 @@ public class SnakeGUI extends JComponent implements KeyListener {
 				System.out.println("INVALID MOVEMENT");
 		}
 
-		// if(KeyEvent.VK_UP == e.getKeyCode() && !(SnakeInterface.Direction.Down == snake.getDirection())) { 
-		// 	snake.changeDirection(SnakeInterface.Direction.Up);
-		// }else if(KeyEvent.VK_LEFT == e.getKeyCode() && !(SnakeInterface.Direction.Right == snake.getDirection())) {
-		// 	snake.changeDirection(SnakeInterface.Direction.Left);
-		// }else if(KeyEvent.VK_RIGHT == e.getKeyCode() && !(SnakeInterface.Direction.Left == snake.getDirection())) {
-		// 	snake.changeDirection(SnakeInterface.Direction.Right);
-		// }else if(KeyEvent.VK_DOWN == e.getKeyCode() && !(SnakeInterface.Direction.Up == snake.getDirection())) {
-		// 	snake.changeDirection(SnakeInterface.Direction.Down);
+		// if(KeyEvent.VK_UP == e.getKeyCode() && !(SnakeInterface.Direction.Down ==
+		// snake.getDirection())) {
+		// snake.changeDirection(SnakeInterface.Direction.Up);
+		// }else if(KeyEvent.VK_LEFT == e.getKeyCode() &&
+		// !(SnakeInterface.Direction.Right == snake.getDirection())) {
+		// snake.changeDirection(SnakeInterface.Direction.Left);
+		// }else if(KeyEvent.VK_RIGHT == e.getKeyCode() &&
+		// !(SnakeInterface.Direction.Left == snake.getDirection())) {
+		// snake.changeDirection(SnakeInterface.Direction.Right);
+		// }else if(KeyEvent.VK_DOWN == e.getKeyCode() && !(SnakeInterface.Direction.Up
+		// == snake.getDirection())) {
+		// snake.changeDirection(SnakeInterface.Direction.Down);
 		// }
 	}
 
@@ -358,7 +386,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		if (direction == SnakeInterface.Direction.Left) {
 			return neck.x == head.x - 1 && neck.y == head.y;
 		}
-		
+
 		if (direction == SnakeInterface.Direction.Down) {
 			return neck.x == head.x && neck.y == head.y + 1;
 		}
@@ -371,7 +399,10 @@ public class SnakeGUI extends JComponent implements KeyListener {
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {} //These two methods aren't needed
+	public void keyTyped(KeyEvent e) {
+	} // These two methods aren't needed
+
 	@Override
-	public void keyReleased(KeyEvent e) {}
+	public void keyReleased(KeyEvent e) {
+	}
 }
