@@ -26,8 +26,10 @@ import javax.swing.*;
  */
 public class SnakeGUI extends JComponent implements KeyListener {
 
-	private static final int DEFAULT_WINDOW_WIDTH = 18;
-	private static final int DEFAULT_WINDOW_HEIGHT = 24;
+	// private static final int DEFAULT_WINDOW_WIDTH = 18;
+	private static final int DEFAULT_WINDOW_WIDTH = 10;
+	// private static final int DEFAULT_WINDOW_HEIGHT = 24;
+	private static final int DEFAULT_WINDOW_HEIGHT = 10;
 	private static final int START_DELAY = 600;
 	private static final int BORDER_LAYOUT_GAP = 5;
 
@@ -125,6 +127,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 
 		SnakeTile bonusStartTile = tiles[randomX][randomY];
 		bonusStartTile.setBonus();
+		bonusStartTile.reset();
 
 		// Adding game elements / features
 		this.add(scoreBoard, BorderLayout.NORTH);
@@ -240,15 +243,37 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		levelLabel.setText("Level " + currentLevel);
 	}
 
+	private Point generateRandomPoint() {
+		int randomX = numGenerator.nextInt(DEFAULT_WINDOW_WIDTH);
+		int randomY = numGenerator.nextInt(DEFAULT_WINDOW_HEIGHT);
+
+		Point point = new Point(randomX, randomY);
+		return point;
+	}
+
+	private boolean verifyBonusSpawn(Snake snake, Point spawnPoint) {
+		Point[] snakeLocation = snake.getSnake();
+		for (Point point : snakeLocation) {
+			if (point.x == spawnPoint.x && point.y == spawnPoint.y) {
+				System.out.println("ATTEMPTED TO SPAWN ON SNAKE");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private void updateScore() {
-		// gameScore += tiles[snake.getHead().y][snake.getHead().x].tileValue();
+		Point spawnPoint = null;
 		if (tiles[snake.getHead().y][snake.getHead().x].isBonus()) {
 			// Create a bonus tile
-			int randomX = numGenerator.nextInt(DEFAULT_WINDOW_WIDTH);
-			int randomY = numGenerator.nextInt(DEFAULT_WINDOW_HEIGHT);
+			do {
+				spawnPoint = generateRandomPoint();
+			} while (!verifyBonusSpawn(snake, spawnPoint));
 
-			SnakeTile bonusStartTile = tiles[randomX][randomY];
+			SnakeTile bonusStartTile = tiles[spawnPoint.x][spawnPoint.y];
 			bonusStartTile.setBonus();
+			bonusStartTile.reset();
 		}
 
 		gameScore += tiles[snake.getHead().y][snake.getHead().x].visitTile();

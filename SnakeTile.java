@@ -71,12 +71,10 @@ public class SnakeTile extends JButton {
 
 	public void setBonus() {
 		this.isBonus = true;
-		this.reset();
 	}
 
 	public void unsetBonus() {
 		this.isBonus = false;
-		this.reset();
 	}
 
 	public boolean isBonus() {
