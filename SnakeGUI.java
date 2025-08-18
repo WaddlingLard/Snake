@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Random;
 // import java.util.random;
 // import java.util.Date;
+import java.lang.Thread;
+import java.net.InterfaceAddress;
 
 // import javax.swing.JButton;
 // import javax.swing.JComponent;
@@ -18,6 +20,8 @@ import java.util.Random;
 // import javax.swing.JPanel;
 // import javax.swing.Timer;
 import javax.swing.*;
+
+import org.w3c.dom.Text;
 
 /**
  * This class handles the GUI, snake movement, and score/time.
@@ -41,11 +45,15 @@ public class SnakeGUI extends JComponent implements KeyListener {
 	private int gameScore;
 	private int highScore;
 	private int currentLevel;
+	private double scoreMultiplier;
 
 	private JLabel scoreLabel;
 	private JLabel levelLabel;
 	private JLabel levelvedUpLabel;
 	private JLabel highScoreLabel;
+
+	private TextThread scoreUpdater;
+	private JoinRun joiner;
 
 	private JButton resetButton;
 	private JButton settingButton;
@@ -61,7 +69,8 @@ public class SnakeGUI extends JComponent implements KeyListener {
 
 	private void setupGUI() {
 
-		speedSettingSelection = new double[1];
+		this.speedSettingSelection = new double[1];
+		this.scoreMultiplier = 1;
 
 		// Setting up the layout for the GUI (with gaps between elements)
 		BorderLayout layout = new BorderLayout(BORDER_LAYOUT_GAP, BORDER_LAYOUT_GAP);
@@ -91,6 +100,10 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		scoreBoard.add(scoreLabel);
 		scoreBoard.add(levelLabel);
 		scoreBoard.add(levelvedUpLabel);
+
+		scoreUpdater = new TextThread();
+		joiner = new JoinRun(scoreUpdater);
+
 		scoreBoard.add(highScoreLabel);
 
 		// Side panel
@@ -295,7 +308,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 			bonusStartTile.reset();
 		}
 
-		gameScore += tiles[snake.getHead().y][snake.getHead().x].visitTile();
+		gameScore += (tiles[snake.getHead().y][snake.getHead().x].visitTile() * scoreMultiplier);
 		if (gameScore > highScore) {
 			highScore = gameScore;
 		}
@@ -306,15 +319,17 @@ public class SnakeGUI extends JComponent implements KeyListener {
 	}
 
 	private void levelUp() {
-		int temp = currentLevel;
-		currentLevel = gameScore / 7500;
-		if (temp < currentLevel) {
-			snake.increaseLength();
-			levelvedUpLabel.setText("LEVEL UP!");
-		} else {
-			levelvedUpLabel.setText("");
+		int currentScoreLevel = Math.max(currentLevel, gameScore / 7500);
+
+		if (currentScoreLevel == currentLevel) {
+			return;
 		}
 
+		currentLevel = currentScoreLevel;
+		snake.increaseLength();
+		scoreMultiplier *= 1.01;
+		scoreUpdater.start();
+		new Thread(joiner).start();
 	}
 
 	// public Point[] getCompletePath(){
@@ -452,5 +467,46 @@ public class SnakeGUI extends JComponent implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+	}
+
+	private class TextThread extends Thread {
+
+		public TextThread() {
+			super();
+		}
+
+		@Override
+		public void run() {
+			try {
+				levelvedUpLabel.setText("LEVEL UP!");
+				Thread.sleep(500);
+				levelvedUpLabel.setText("");
+			} catch (InterruptedException error) {
+				System.err.println("Thread is interrupted!");
+			}
+
+		}
+	}
+
+	private class JoinRun implements Runnable {
+
+		Thread waitFor;
+
+		public JoinRun(Thread join) {
+			this.waitFor = join;
+		}
+
+		@Override
+		public void run() {
+			try {
+				waitFor.join();
+				System.out.println("Retrieve the thread!");
+				// Create a new one
+				scoreUpdater = new TextThread();
+			} catch (InterruptedException error) {
+				System.err.println("Joiner thread was interrupted!");
+			}
+		}
+
 	}
 }
