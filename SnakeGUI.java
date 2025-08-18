@@ -26,10 +26,10 @@ import javax.swing.*;
  */
 public class SnakeGUI extends JComponent implements KeyListener {
 
-	// private static final int DEFAULT_WINDOW_WIDTH = 18;
-	private static final int DEFAULT_WINDOW_WIDTH = 10;
-	// private static final int DEFAULT_WINDOW_HEIGHT = 24;
-	private static final int DEFAULT_WINDOW_HEIGHT = 10;
+	private static final int DEFAULT_WINDOW_WIDTH = 18;
+	// private static final int DEFAULT_WINDOW_WIDTH = 4;
+	private static final int DEFAULT_WINDOW_HEIGHT = 24;
+	// private static final int DEFAULT_WINDOW_HEIGHT = 4;
 	private static final int START_DELAY = 600;
 	private static final int BORDER_LAYOUT_GAP = 5;
 
@@ -52,12 +52,16 @@ public class SnakeGUI extends JComponent implements KeyListener {
 
 	private static Random numGenerator = new Random(System.currentTimeMillis());
 
+	private double[] speedSettingSelection;
+
 	public SnakeGUI() {
 
 		setupGUI();
 	}
 
 	private void setupGUI() {
+
+		speedSettingSelection = new double[1];
 
 		// Setting up the layout for the GUI (with gaps between elements)
 		BorderLayout layout = new BorderLayout(BORDER_LAYOUT_GAP, BORDER_LAYOUT_GAP);
@@ -166,6 +170,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 			timer = null;
 			resetScoreBoard();
 			requestFocus();
+
 		}
 	}
 
@@ -177,7 +182,7 @@ public class SnakeGUI extends JComponent implements KeyListener {
 
 			// JFrame frame = new JFrame();
 			// JPanel settings = new JPanel();
-			SnakeSettingsPanel panel = new SnakeSettingsPanel();
+			SnakeSettingsPanel panel = new SnakeSettingsPanel(speedSettingSelection);
 			// panel.setDefaultCloseOperation(JPanel.EXIT_ON_CLOSE);
 
 			// frame.add(settings);
@@ -327,7 +332,11 @@ public class SnakeGUI extends JComponent implements KeyListener {
 	}
 
 	private void updateTimer() {
-		timer.setDelay((int) (START_DELAY * Math.pow(.9, currentLevel + 1)));
+		if (speedSettingSelection[0] == 0) {
+			timer.setDelay((int) (START_DELAY * Math.pow(.9, currentLevel)));
+		} else {
+			timer.setDelay((int) (START_DELAY * Math.pow(speedSettingSelection[0], currentLevel)));
+		}
 	}
 
 	private class MyAnimationAction implements ActionListener {
