@@ -247,15 +247,24 @@ public class SnakeGUI extends JComponent implements KeyListener {
 		int randomX = numGenerator.nextInt(DEFAULT_WINDOW_WIDTH);
 		int randomY = numGenerator.nextInt(DEFAULT_WINDOW_HEIGHT);
 
+		// In this case row represents the y and col represents the x
 		Point point = new Point(randomX, randomY);
 		return point;
 	}
 
 	private boolean verifyBonusSpawn(Snake snake, Point spawnPoint) {
+		// Points are stored row, col [so y, x]
 		Point[] snakeLocation = snake.getSnake();
+		// System.out.printf("There are %d points in the snake\n",
+		// snakeLocation.length);
 		for (Point point : snakeLocation) {
-			if (point.x == spawnPoint.x && point.y == spawnPoint.y) {
-				System.out.println("ATTEMPTED TO SPAWN ON SNAKE");
+			// System.out.printf("Comparing %d == %d, %d == %d\n", point.y, spawnPoint.x,
+			// point.x, spawnPoint.y);
+
+			if (point.y == spawnPoint.x && point.x == spawnPoint.y) {
+				// System.out.printf("Point x: %d, Point y: %d\n", point.y, point.x);
+				// System.out.println("ATTEMPTED TO SPAWN ON SNAKE");
+
 				return false;
 			}
 		}
@@ -265,11 +274,16 @@ public class SnakeGUI extends JComponent implements KeyListener {
 
 	private void updateScore() {
 		Point spawnPoint = null;
+		boolean validSpawn = false;
 		if (tiles[snake.getHead().y][snake.getHead().x].isBonus()) {
 			// Create a bonus tile
 			do {
+				// System.out.println("Generating a new spawn point!");
 				spawnPoint = generateRandomPoint();
-			} while (!verifyBonusSpawn(snake, spawnPoint));
+				// System.out.printf("Current spawn point x: %d, y: %d\n", spawnPoint.x,
+				// spawnPoint.y);
+				validSpawn = verifyBonusSpawn(snake, spawnPoint);
+			} while (!validSpawn);
 
 			SnakeTile bonusStartTile = tiles[spawnPoint.x][spawnPoint.y];
 			bonusStartTile.setBonus();
